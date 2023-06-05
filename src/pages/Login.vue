@@ -3,9 +3,12 @@
     import Logo from '../componentes/Logo.vue';
     import FormField from "../componentes/FormField.vue";
     import validation from '../utils/validations.js';
-    import { ref} from 'vue';
+    import { ref, watch} from 'vue';
     import {useRouter} from 'vue-router'
- 
+    import autenticate from '../services/auth'
+    import {useStore} from 'vuex'
+    
+    const store = useStore();
 
     const children_refs = ref([]);
     const router = useRouter();
@@ -31,24 +34,50 @@
         }
     ]
     
-    const getUserInputs = () => {
+    const getFormState = () => {
         let user_inputs = {}
-        children_refs._rawValue.map((children, index) => user_inputs[fields[index].name] = children.user_input);
-        if(!Object.values(user_inputs).filter(value => value).length){clearAll()}
+        children_refs._rawValue.map((children) => user_inputs[children.field.name] = children.user_input);
+        let errors = {}
+        children_refs._rawValue.map((children) => errors[children.field.name] = children.error);
+        const valid = Object.values(errors).filter(erro => erro).length === 0;
+        return {
+            user_inputs: user_inputs,
+            errors: errors,
+            valid: valid
+        }
     }
 
     const onSubmit = () =>{
         children_refs._rawValue.map(children => children.show_error = true)
+        const form_state = getFormState()
+        console.log(form_state)
+        if (!form_state.valid){return}
+        let loginData = {
+            username: form_state.user_inputs.email,
+            password: form_state.user_inputs.password
+        };
+
+        // test mode
+        if ('test' == 'test'){
+            loginData = {
+                username: 'mor_2314',
+                password: '83r5^_'
+            }
+        }
+        // test mode
+        const token = autenticate(loginData);
+
     }
 
-    const onUserInput = () =>{getUserInputs();}
+    const onUserInput = () =>{
+        const form_state = getFormState();
+    }
 
     const clearAll = () =>{ 
         children_refs._rawValue.map(children => children.user_input = "");
         children_refs._rawValue.map(children => children.show_error = false)
     }
 
-    
 </script>
 
 <template>
@@ -135,7 +164,7 @@
         margin-top: 10px;
         padding: 15px;
         color: white;
-        background-color: rgb(243, 1, 104);
+        background-color: v-bind("store.state.theme.buttonColor");
         font-size: 12px;
         font-weight: lighter;
     }

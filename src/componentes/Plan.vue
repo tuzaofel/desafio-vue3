@@ -14,8 +14,10 @@
         router.push('/singup');
     }
     const navigateToPlans = () =>  {
-        router.push('/plans');
+        router.push({name:'plans'});
     };
+
+
 </script>
 
 

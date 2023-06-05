@@ -6,13 +6,15 @@
     const emit = defineEmits(["userInput"]);
     const user_input = ref("");
     const show_error = ref(false);
+    const error = ref("");
 
-
+    error.value = field.validate(user_input.value)
     watch(user_input, () => {
         emit("userInput",  [field.name, user_input.value]);
+        error.value = field.validate(user_input.value)
     });
 
-    defineExpose({user_input, show_error} );
+    defineExpose({user_input, show_error, field, error} );
 
 </script>
 

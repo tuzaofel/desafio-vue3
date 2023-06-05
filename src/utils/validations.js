@@ -1,7 +1,7 @@
 
 
 const email_pattern = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
-const password_pattern = new RegExp("(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}");
+const password_pattern = new RegExp("(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).");
 
 
 const validation = {
@@ -18,8 +18,8 @@ const validation = {
         return "";
     },
     password: (input) => {
-        if (input.length < 8){return "A senha deve conter no mínimo 8 caracteres"}
-        if (input.length > 16){return "A senha deve conter no máximo 16 caracteres"}
+        if (input.length < 6){return "A senha deve conter no mínimo 6 caracteres"}
+        if (input.length > 32){return "A senha deve conter no máximo 32 caracteres"}
         if (!password_pattern.test(input)){return "A senha deve conter letra maiúscula, minúscula e número."}
         return "";
     },

@@ -5,12 +5,11 @@
     import validation from '../utils/validations.js';
     import { ref} from 'vue';
     import { useRouter } from "vue-router";
- 
     
     const children_refs = ref([]);
     const checked = ref(false);
-
     const router = useRouter();
+
     const goToWelcome = () => {
         router.push('/welcome');
     }
@@ -46,12 +45,12 @@
             validate: validation.password
         },
         {
-            name: "confirmpassword",
+            name: "confirmPassword",
             placeholder: "",
             label: "Confirme sua senha",
             type: "password",
             validate: (input) => {
-                if(input != getUserInputs().password){
+                if(input != getFormState().user_inputs.password){
                     return "A confirmação de senha deve ser igual a senha."
                 }
                 return "";
@@ -67,24 +66,34 @@
         },
     ]
     
-    const getUserInputs = () => {
+
+    const getFormState = () => {
         let user_inputs = {}
-        children_refs._rawValue.map((children, index) => user_inputs[fields[index].name] = children.user_input);
-        if(!Object.values(user_inputs).filter(value => value).length){clearAll()}
-        return user_inputs;
+        children_refs._rawValue.map((children) => user_inputs[children.field.name] = children.user_input);
+        let errors = {}
+        children_refs._rawValue.map((children) => errors[children.field.name] = children.error);
+        const valid = Object.values(errors).filter(erro => erro).length === 0;
+        return {
+            user_inputs: user_inputs,
+            errors: errors,
+            valid: valid
+        }
     }
 
     const onSubmit = () =>{
-        children_refs._rawValue.map(children => children.show_error = true);
-        goToWelcome()
+        const form_state = getFormState();
+        console.log(form_state)
+        //goToWelcome()
     }
 
-    const onUserInput = () =>{getUserInputs();}
+    const onUserInput = () =>{saveForm();}
 
     const clearAll = () =>{ 
         children_refs._rawValue.map(children => children.user_input = "");
         children_refs._rawValue.map(children => children.show_error = false)
     }
+
+
 </script>
 
 <template>
