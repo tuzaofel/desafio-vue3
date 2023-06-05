@@ -1,26 +1,35 @@
 
 
 <script setup>
-    import CompostText from '../componentes/CompostText.vue';
+    import CompostText from './CompostText.vue';
     import { defineProps } from 'vue';
-    const {planData, planIndex} = defineProps(['planData', 'planIndex']);
-
-    console.log(globalState.selectedPlan);
-
+    import {useStore} from 'vuex';
+    import {useRouter} from 'vue-router'
+    const {planData, planIndex, selectedMode} = defineProps(['planData', 'planIndex', 'selectedMode']);
+    
+    const store = useStore();
+    const router = useRouter();
     const selectPlan = () => {
-        globalState.selectedPlan = planIndex;
-        console.log(globalState);
+        store.commit("setPlan", planIndex )
+        router.push('/singup');
     }
-
+    const navigateToPlans = () =>  {
+        router.push('/plans');
+    };
 </script>
 
 
 <template>
     <div class="main-wrapper">
-        <div class="pretitle" v-if="planData.pretitle != ''">
-            {{planData.pretitle }}
+        <div class="pretitle">
+            <div class="pretitle-not-selected" v-if="planData.pretitle != '' && !selectedMode">
+                {{planData.pretitle }}
+            </div>
+            <div class="pretitle-selected" v-if="selectedMode">
+                PLANO ESCOLHIDO
+            </div>
         </div>
-        <div class="container">
+        <div :class="'container-deg-' + selectedMode">
             <text class="title">
                 {{planData.title}}
             </text>
@@ -36,7 +45,7 @@
                 {{planData.indication}}
             </text>
             <div class="button-wrapper">
-                <button @click="selectPlan">{{planData.buttonCaption}}</button>
+                <button v-if="!selectedMode" @click="selectPlan">{{planData.buttonCaption}}</button>
             </div>
             
             <div class="desctiptions">
@@ -47,9 +56,11 @@
                         <text class="mark">✓</text>
                         <CompostText class="feature" :text="feature" />
                     </div>
-                    
                 </div>
             </div>
+        </div>
+        <div v-if="selectedMode" class="change-plan-wrapper">
+            <button class="change-plan" @click="navigateToPlans()">Trocar plano</button>
         </div>
     </div>
 </template>
@@ -62,23 +73,51 @@
         background-color: white;
         margin: 5px;
     }
+
     .pretitle{
-        position: absolute;
-        background-color: rgb(16, 195, 0);
+        background-color:transparent;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 80px;
-        padding: 4px;
+        height: 22px;
+        translate: 0% -50%;
+        margin-bottom: -20px;
+    }
+     .pretitle-selected {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: black;
         color: white;
+        padding: 4px;
         font-size: 10px;
         border-radius: 8px;
-        translate: 63.5% -50%;
     }
-    .container{
+
+     .pretitle-not-selected {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(16, 195, 0);
+        color: white;
+        padding: 4px;
+        font-size: 10px;
+        border-radius: 8px;
+    }
+
+    .container-deg-false{
         margin: 20px;
         display: flex;
         flex-direction: column;
+    }
+    .container-deg-true{
+        margin: 20px;
+        display: flex;
+        flex-direction: column;
+        -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+        mask-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
     }
 
     text{
@@ -90,6 +129,7 @@
         color:dimgrey;
         font-weight: bold;
         margin-bottom: 5px;
+        margin-top: 0px;
     }
 
     .price{
@@ -165,6 +205,19 @@
     .feature{
         flex: 10;
         font-size: 8px;
+    }
+    .change-plan-wrapper{
+        display: flex;
+        justify-content: center;
 
     }
+    .change-plan{
+        background-color: white;
+        color: black;
+        border: black solid 1px;
+        translate: 0% -150%;
+        font-weight: bold;
+    }
+
+
 </style>

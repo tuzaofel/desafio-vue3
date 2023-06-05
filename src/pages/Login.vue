@@ -10,7 +10,7 @@
     const children_refs = ref([]);
     const router = useRouter();
 
-    const navigateToSingUP = () =>  {
+    const navigateToPlans = () =>  {
         router.push('/plans');
     };
 
@@ -54,7 +54,7 @@
 <template>
     <main class="container">
         <div class="form-container">
-            <Logo />
+            <Logo width="30%"/>
             <div class="login-card">
                 <div class="header-form">
                     <text class="title">Entre na sua conta</text>
@@ -68,7 +68,7 @@
             </div>
             <div class="singup">
                 <text class="mensage">Ainda não tem conta?</text>
-                <div @click="navigateToSingUP()"><text class="link">Cadastre-se</text></div>
+                <div @click="navigateToPlans()"><text class="link">Cadastre-se</text></div>
             </div>
         </div>
     </main>

@@ -2,7 +2,9 @@
 import {createRouter, createWebHistory} from "vue-router"
 import Login from '../pages/Login.vue';
 import Plans from '../pages/Plans.vue';
-import Plan from '../pages/Plan.vue';
+import SingUp from '../pages/SingUp.vue';
+import Welcome from '../pages/Welcome.vue';
+import Help from '../pages/Help.vue'
 
 
 const router = createRouter({
@@ -19,10 +21,21 @@ const router = createRouter({
             component: Plans
         },
         {
-            path: "/plan",
-            name: 'plan',
-            component: Plan
-        }
+            path: "/singup",
+            name: 'singup',
+            component: SingUp,
+        },
+        {
+            path: "/welcome",
+            name: 'welcome',
+            component: Welcome,
+        },
+        {
+            path: "/help",
+            name: 'help',
+            component: Help,
+        },
+
         
     ]
 })

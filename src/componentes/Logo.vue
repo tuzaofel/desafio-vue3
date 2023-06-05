@@ -3,6 +3,10 @@
 <script setup>
     import Logo from '../assets/logo_localweb_bg0.png';
     import {useRouter} from 'vue-router';
+    import { defineProps } from 'vue';
+
+
+    const { width } = defineProps(["width"]);
 
     const router = useRouter();
     const navigateToHome = () => {
@@ -12,15 +16,13 @@
 </script>
 
 <template>
-    <div class="logo" @click="navigateToHome">
+    <div class="logo" @click="navigateToHome" :style="{width:width}">
         <img :src="Logo"/>
     </div>
 </template>
 
 <style scoped>
 .logo{
-    min-width: 50px;
-    width: 30%;
     display: flex;
     margin: auto;
     cursor: pointer;

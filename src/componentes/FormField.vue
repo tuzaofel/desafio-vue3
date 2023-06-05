@@ -7,6 +7,7 @@
     const user_input = ref("");
     const show_error = ref(false);
 
+
     watch(user_input, () => {
         emit("userInput",  [field.name, user_input.value]);
     });
@@ -23,10 +24,9 @@
                 <text class="error" v-if="show_error" :style="{opacity : 1}">{{field.validate(user_input)}}</text>
                 <text class="error" v-else :style="{opacity : 0}">place</text>
             </div>
-            <input v-model="user_input" :placeholder="field.placeholder" :type="field.type" />
+            <input v-if="Object.keys(field).includes('mask') " v-model="user_input" :placeholder="field.placeholder" :type="field.type" v-mask="field.mask"/>
+            <input v-else v-model="user_input" :placeholder="field.placeholder" :type="field.type"/>
         </div>
-
-        
     </main>
 </template>
 
