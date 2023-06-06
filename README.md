@@ -1,6 +1,4 @@
-# basic_vue_singup_app
-
-This template should help get you started developing with Vue 3 in Vite.
+# Desafio vue
 
 ## Recommended IDE Setup
 
