@@ -5,7 +5,6 @@ import router from './router/index'
 import store from './store/index.js'
 import VueTheMask from 'vue-the-mask'
 
-import './assets/main.css'
 
 const app = createApp(App)
 
