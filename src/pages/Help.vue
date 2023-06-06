@@ -2,16 +2,17 @@
 
 <script setup>
     import Logo from '../componentes/Logo.vue';
-
+    import Layout from './Layout.vue';
 </script>
 
 <template>
-    <main>
-        <Logo width="30%"/>
-        <h1>CENTRAL DE AJUDA</h1>
+    <Layout>
+        <main>
+            <Logo width="30%"/>
+            <h1>CENTRAL DE AJUDA</h1>
 
-    </main>
-
+        </main>
+    </Layout>
 </template>
 
 <style scoped>

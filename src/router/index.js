@@ -6,7 +6,6 @@ import SingUp from '../pages/SingUp.vue';
 import Welcome from '../pages/Welcome.vue';
 import Help from '../pages/Help.vue'
 
-
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -35,8 +34,6 @@ const router = createRouter({
             name: 'help',
             component: Help,
         },
-
-        
     ]
 })
 

@@ -3,15 +3,16 @@
     
     import FormField from "../componentes/FormField.vue";
     import validation from '../utils/validations.js';
-    import { ref} from 'vue';
-    import { useRouter } from "vue-router";
-    
-    const children_refs = ref([]);
-    const checked = ref(false);
-    const router = useRouter();
+    import getUtilities from '../utils/utils.js';
+    import addNewUser from '../services/addNewUser';
 
+    const utils = getUtilities();
+
+    const children_refs = utils.ref([]);
+    const checked = utils.ref(false);
+    
     const goToWelcome = () => {
-        router.push('/welcome');
+        utils.router.push('/welcome');
     }
 
     const fields = [
@@ -21,6 +22,13 @@
             label: "Nome completo",
             type: "text ",
             validate: validation.name
+        },
+        {
+            name: "username",
+            placeholder: "Nome do usuário",
+            label: "Usuário de acesso",
+            type: "text ",
+            validate: validation.username
         },
         {
             name: "cel",
@@ -61,12 +69,10 @@
             placeholder: "Meu Site",
             label: "Nome do seu site",
             type: "text",
-            mask: "",
-            validate: validation.name
+            validate: validation.notRequired
         },
     ]
     
-
     const getFormState = () => {
         let user_inputs = {}
         children_refs._rawValue.map((children) => user_inputs[children.field.name] = children.user_input);
@@ -81,16 +87,16 @@
     }
 
     const onSubmit = () =>{
+        children_refs._rawValue.map(children => children.show_error = true)
         const form_state = getFormState();
-        console.log(form_state)
-        //goToWelcome()
+        if (!form_state.valid && !checked.value){
+            console.log(form_state);
+            return;
+        }
+        const res = addNewUser(form_state.user_inputs).then(resp => resp)
     }
-
-    const onUserInput = () =>{saveForm();}
-
-    const clearAll = () =>{ 
-        children_refs._rawValue.map(children => children.user_input = "");
-        children_refs._rawValue.map(children => children.show_error = false)
+    const onUserInput = () =>{
+        const form_state = getFormState();
     }
 
 
@@ -133,7 +139,10 @@
 
     .container{
         background-color: white;
+        max-width: 370px;
         display: flex;
+        margin-bottom: 20px;
+        
     }
     .form-container{
         width: 350px;

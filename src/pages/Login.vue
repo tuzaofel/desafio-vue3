@@ -3,19 +3,35 @@
     import Logo from '../componentes/Logo.vue';
     import FormField from "../componentes/FormField.vue";
     import validation from '../utils/validations.js';
-    import { ref, watch} from 'vue';
-    import {useRouter} from 'vue-router'
     import autenticate from '../services/auth'
-    import {useStore} from 'vuex'
-    
-    const store = useStore();
+    import getUtilities from '../utils/utils.js';
+    import Layout from './Layout.vue';
+    import {onBeforeUnmount, ref, onMounted} from 'vue';
 
-    const children_refs = ref([]);
-    const router = useRouter();
+    const utils = getUtilities();
 
+    const children_refs = utils.ref([]);
     const navigateToPlans = () =>  {
-        router.push('/plans');
+        utils.router.push('/plans');
     };
+
+    const windowWidth = ref(window.innerWidth);
+    const windowHeight = ref(window.innerHeight);
+
+    const updateWindowSize = () => {
+      windowWidth.value = window.innerWidth;
+      windowHeight.value = window.innerHeight;
+      console.log(windowWidth.value, windowHeight.value)
+    };
+    onMounted(() => {
+        updateWindowSize();
+        window.addEventListener('resize', updateWindowSize);
+    });
+    onBeforeUnmount(() => {
+        window.removeEventListener('resize', updateWindowSize);
+    })
+
+    
 
     const fields = [
         {
@@ -24,6 +40,13 @@
             label: "E-mail",
             type: "email ",
             validate: validation.email
+        },
+        {
+            name: "username",
+            placeholder: "Nome do usuário",
+            label: "Usuário de acesso",
+            type: "text ",
+            validate: validation.username
         },
         {
             name: "password",
@@ -53,19 +76,16 @@
         console.log(form_state)
         if (!form_state.valid){return}
         let loginData = {
-            username: form_state.user_inputs.email,
+            username: form_state.user_inputs.username,
             password: form_state.user_inputs.password
         };
 
-        // test mode
-        if ('test' == 'test'){
-            loginData = {
-                username: 'mor_2314',
-                password: '83r5^_'
-            }
-        }
-        // test mode
         const token = autenticate(loginData);
+        if (token.token != ""){
+            utils.store.commit("login", loginData.username, token.token)
+        }else{
+            console.log("Usuario ou senha incorretos")
+        }
 
     }
 
@@ -81,43 +101,45 @@
 </script>
 
 <template>
-    <main class="container">
-        <div class="form-container">
-            <Logo width="30%"/>
-            <div class="login-card">
-                <div class="header-form">
-                    <text class="title">Entre na sua conta</text>
-                    <text class="subtitle">Para acessar sua conta informe seu e-mail e senha</text>
+    <Layout>
+        <main class="container">
+            <div class="form-container">
+                <Logo width="30%"/>
+                <div class="login-card">
+                    <div class="header-form">
+                        <text class="title">Entre na sua conta</text>
+                        <text class="subtitle">Para acessar sua conta informe seu e-mail e senha</text>
+                    </div>
+                    <div class="form-fields">
+                        <FormField v-for="(field, index) in fields" :field="field" :key="index" @userInput="onUserInput" ref="children_refs"/>
+                    </div>
+                    <text class="forgot-password">Esqueci minha senha</text>
+                <button @click="onSubmit">FAZER LOGIN</button>
                 </div>
-                <div class="form-fields">
-                    <FormField v-for="(field, index) in fields" :field="field" :key="index" @userInput="onUserInput" ref="children_refs"/>
+                <div class="singup">
+                    <text class="mensage">Ainda não tem conta?</text>
+                    <div @click="navigateToPlans()"><text class="link">Cadastre-se</text></div>
                 </div>
-                <text class="forgot-password">Esqueci minha senha</text>
-            <button @click="onSubmit">FAZER LOGIN</button>
             </div>
-            <div class="singup">
-                <text class="mensage">Ainda não tem conta?</text>
-                <div @click="navigateToPlans()"><text class="link">Cadastre-se</text></div>
-            </div>
-        </div>
-    </main>
+        </main>
+    </Layout>
 </template>
 
 <style scoped>
 
     .container{
-        background-color: rgb(250,250,252);
-        min-width: 500px;
-        min-height: 500px;
-        width: 100%;
-        height: 100%;
+        background-color: white;
         display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
     }
     .form-container{
+
         width: 300px;
     }
     .login-card{
-        margin-top: 15px;
+        margin-top: 5%;
         display: flex;
         flex-direction: column;
         padding: 3%;
@@ -164,7 +186,7 @@
         margin-top: 10px;
         padding: 15px;
         color: white;
-        background-color: v-bind("store.state.theme.buttonColor");
+        background-color: v-bind("utils.store.state.theme.buttonColor");
         font-size: 12px;
         font-weight: lighter;
     }

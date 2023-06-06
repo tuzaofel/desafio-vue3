@@ -16,10 +16,7 @@
     const navigateToPlans = () =>  {
         router.push({name:'plans'});
     };
-
-
 </script>
-
 
 <template>
     <div class="main-wrapper">
@@ -73,7 +70,8 @@
         width: 200px;
         box-sizing: border-box;
         background-color: white;
-        margin: 5px;
+        margin: 0px 10px;
+        margin-bottom: 20px;
     }
 
     .pretitle{
